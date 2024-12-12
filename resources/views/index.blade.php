@@ -8,7 +8,7 @@
         <a href="{{ route('products.create') }}" class="mb-3 btn btn-primary">Добавить</a>
         <a href="{{ route('receipts.index') }}" class="mb-3 btn btn-secondary">Поступления</a>
 
-        <table class="table table-striped">
+        <table class="mb-3 table table-striped">
             <thead>
             <tr>
                 <th>Название</th>
@@ -23,7 +23,10 @@
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->price }}</td>
                     <td>{{ $product->article }}</td>
-                    <td>{{ $product->total_quantity }}</td>
+                    <td>{{ $product->total_quantity ?? '0' }}</td>
+                    <td>
+                        <a href="{{ route('products.details', $product->article) }}" class="btn btn-info">Подробнее</a>
+                    </td>
                     <td>
                         <a href="{{ route('products.edit', $product->article) }}"
                            class="btn btn-primary">Редактировать</a>
@@ -39,6 +42,8 @@
             @endforeach
             </tbody>
         </table>
+
+        <div>{{ $products->links() }}</div>
     </div>
 
 @endsection

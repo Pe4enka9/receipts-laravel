@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Receipt;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,9 +17,23 @@ class ProductController extends Controller
         $products = Product::query()
             ->withSum('receipts as total_quantity', 'quantity')
             ->orderBy('id', 'desc')
-            ->get();
+            ->paginate(5);
 
         return view('index', ['products' => $products]);
+    }
+
+    public function details(string $article): View
+    {
+        $product = Product::query()
+            ->where('article', $article)
+            ->withSum('receipts as total_quantity', 'quantity')
+            ->first();
+        $receipts = Receipt::query()
+            ->where('product_id', $product->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('details', ['product' => $product, 'receipts' => $receipts]);
     }
 
     public function createShow(): View

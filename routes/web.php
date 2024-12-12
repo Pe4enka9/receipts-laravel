@@ -4,22 +4,27 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReceiptController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [ProductController::class, 'index'])->name('products.index');
+Route::controller(ProductController::class)->name('products.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/details/{article}', 'details')->name('details');
 
-Route::get('/create', [ProductController::class, 'createShow'])->name('products.create');
-Route::post('/create', [ProductController::class, 'create'])->name('products.store');
+    Route::get('/create', 'createShow')->name('create');
+    Route::post('/create', 'create')->name('store');
 
-Route::get('/edit/{article}', [ProductController::class, 'editShow'])->name('products.edit');
-Route::patch('/edit/{article}', [ProductController::class, 'edit'])->name('products.update');
+    Route::get('/edit/{article}', 'editShow')->name('edit');
+    Route::patch('/edit/{article}', 'edit')->name('update');
 
-Route::delete('/delete/{article}', [ProductController::class, 'destroy'])->name('products.destroy');
+    Route::delete('/delete/{article}', 'destroy')->name('destroy');
+});
 
-Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts.index');
+Route::controller(ReceiptController::class)->prefix('receipts')->name('receipts.')->group(function () {
+    Route::get('/', 'index')->name('index');
 
-Route::get('/receipts/create', [ReceiptController::class, 'createShow'])->name('receipts.create');
-Route::post('/receipts/create', [ReceiptController::class, 'create'])->name('receipts.store');
+    Route::get('/create', 'createShow')->name('create');
+    Route::post('/create', 'create')->name('store');
 
-Route::get('/receipts/edit/{id}', [ReceiptController::class, 'editShow'])->name('receipts.edit');
-Route::patch('/receipts/edit/{id}', [ReceiptController::class, 'edit'])->name('receipts.update');
+    Route::get('/edit/{id}', 'editShow')->name('edit');
+    Route::patch('/edit/{id}', 'edit')->name('update');
 
-Route::delete('/receipts/delete/{id}', [ReceiptController::class, 'destroy'])->name('receipts.destroy');
+    Route::delete('/delete/{id}', 'destroy')->name('destroy');
+});
