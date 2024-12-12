@@ -13,7 +13,10 @@ class ProductController extends Controller
 {
     public function index(): View
     {
-        $products = Product::all();
+        $products = Product::query()
+            ->withSum('receipts as total_quantity', 'quantity')
+            ->orderBy('id', 'desc')
+            ->get();
 
         return view('index', ['products' => $products]);
     }
@@ -39,7 +42,7 @@ class ProductController extends Controller
             'article.max' => 'Артикул должен содержать не больше :max символов!',
         ]);
 
-        Product::create([
+        Product::query()->create([
             'name' => $validated['name'],
             'price' => $validated['price'],
             'article' => $validated['article'] ?? mt_rand(),
@@ -50,7 +53,7 @@ class ProductController extends Controller
 
     public function editShow(string $article): View
     {
-        $product = Product::where('article', $article)->first();
+        $product = Product::query()->where('article', $article)->first();
 
         return view('edit', ['product' => $product]);
     }
@@ -71,7 +74,7 @@ class ProductController extends Controller
             'article.max' => 'Артикул должен содержать не больше :max символов!',
         ]);
 
-        $product = Product::where('id', $request->id)->first();
+        $product = Product::query()->where('id', $request->id)->first();
 
         $product->update([
             'name' => $validated['name'],
@@ -84,7 +87,7 @@ class ProductController extends Controller
 
     public function destroy(string $article): RedirectResponse
     {
-        $product = Product::where('article', $article)->first();
+        $product = Product::query()->where('article', $article)->first();
 
         $product->delete();
 
